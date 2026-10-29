@@ -1,0 +1,17 @@
+{
+  "name": "aivelly-website",
+  "version": "1.0.0",
+  "description": "AIVELLY – strona firmowa (statyczna) z demo chatbota.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "build": "node scripts/check.mjs",
+    "test": "node --test",
+    "sync-demo": "node scripts/sync-demo.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "license": "UNLICENSED"
+}
