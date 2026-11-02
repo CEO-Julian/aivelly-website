@@ -10,7 +10,7 @@ aivelly-website/
 │   ├── index.html               ← strona główna (wszystkie sekcje)
 │   ├── polityka-prywatnosci.html← szkic polityki prywatności
 │   ├── 404.html                 ← strona „nie znaleziono”
-│   ├── robots.txt, favicon.svg
+│   ├── robots.txt, sitemap.xml, favicon.svg
 │   ├── assets/css/style.css     ← wygląd (kolory marki na górze pliku)
 │   ├── assets/js/config.js      ← ustawienia formularza (bez sekretów)
 │   ├── assets/js/validation.js  ← walidacja formularza
@@ -30,12 +30,22 @@ Projekt nie ma żadnych zależności do instalowania (`npm install` nie jest pot
 
 | Element | Stan |
 |---|---|
+| Wszystkie sekcje, nawigacja, przyciski i linki | ✅ działa (sprawdzone automatycznie i w przeglądarce) |
+| Wygląd na telefonie, tablecie i komputerze | ✅ sprawdzone |
+| Demo chatbota | 🟡 **demonstracja** – fikcyjny salon, reguły w przeglądarce, bez AI, bez dostępu do kalendarza |
+| Formularz – walidacja i ochrona przed spamem | ✅ działa (pole-pułapka + odrzucanie zbyt szybkich wysyłek) |
+| Formularz – wysyłka | ✅ teraz: otwiera program pocztowy odwiedzającego z gotową wiadomością do aivelly@outlook.com · ⏳ zalecane: Formspree (wysyłka bez programu pocztowego) |
+| Polityka prywatności | 🟡 **projekt** – fragmenty oznaczone [do uzupełnienia]/[do weryfikacji] |
+| Dane rejestrowe firmy | ⚠️ brak – celowo nie zostały wymyślone |
+| Własna domena | ⏳ opcjonalnie później |
+
+---|---|
 | Wszystkie sekcje, nawigacja, przyciski i linki | ✅ działa |
 | Wygląd na telefonie, tablecie i komputerze | ✅ sprawdzone |
 | Demo chatbota | 🟡 **demonstracja** – fikcyjny salon, reguły w przeglądarce, bez AI i bez serwera |
 | Formularz kontaktowy – walidacja | ✅ działa |
-| Formularz kontaktowy – wysyłka | ⚠️ **niepodłączona** – formularz uczciwie informuje, że wiadomość nie została wysłana (patrz „Podłączenie formularza”) |
-| Polityka prywatności | ⚠️ szkic – uzupełnij przed podłączeniem formularza |
+| Formularz kontaktowy – wysyłka | ✅ przez program pocztowy odwiedzającego na **aivelly@outlook.com** (opcjonalnie później: Formspree – wysyłka bez programu pocztowego) |
+| Polityka prywatności | 🟡 wstępna wersja – brakuje danych rejestrowych firmy (nazwa, adres, NIP) |
 | Dane rejestrowe firmy w stopce | ⚠️ do uzupełnienia |
 | Własna domena | ⚠️ opcjonalnie później |
 
@@ -114,3 +124,32 @@ Formularz nic nie wysyła, dopóki nie uzupełnisz `public/assets/js/config.js`:
 Przed uruchomieniem wysyłki uzupełnij politykę prywatności (administrator danych, cel, czas przechowywania, prawa osób – RODO).
 
 **Nigdy nie wpisuj kluczy API ani haseł do plików w `public/`** – wszystko w tym folderze jest publicznie widoczne. Sprawdzenie `npm run build` zatrzyma publikację, jeśli wykryje coś, co wygląda na klucz.
+
+---
+
+## Wersja „bez folderów” (gdy przeglądarka gubi foldery przy wgrywaniu)
+`npm run flat` tworzy folder `dist-flat/` – ta sama strona, ale wszystkie pliki w jednym miejscu.
+Wgrywa się ją na GitHub przez zwykłe przeciągnięcie plików. W Render ustaw wtedy:
+**Build Command:** `npm run build`, **Publish Directory:** `.` (kropka).
+
+
+---
+
+## Formspree – wysyłka formularza bez programu pocztowego (zalecane, darmowe)
+Darmowy plan Formspree obsługuje ok. 50 wiadomości miesięcznie – dla strony firmowej na start wystarczy.
+1. Wejdź na <https://formspree.io> → **Get Started** i załóż konto na **aivelly@outlook.com**. Potwierdź adres w skrzynce.
+2. Kliknij **+ New Form**, nazwij go np. `Kontakt AIVELLY`, jako adres odbiorcy zostaw aivelly@outlook.com.
+3. Skopiuj **adres formularza** – wygląda tak: `https://formspree.io/f/abcdwxyz`. To nie jest sekret.
+4. Na GitHubie otwórz plik `public/assets/js/config.js` → ikona ołówka (**Edit**) → wpisz adres między apostrofy w `formEndpoint: ''` → **Commit changes**.
+5. Render sam opublikuje zmianę. Wyślij próbną wiadomość z formularza i sprawdź skrzynkę.
+6. Uzupełnij w polityce prywatności sekcję o formularzu (Formspree jako odbiorca danych).
+
+## Aktualizowanie strony
+Każda zmiana w repozytorium GitHub publikuje się automatycznie w ok. 1–2 minuty:
+- **mała zmiana tekstu:** otwórz plik na GitHubie → ołówek → zmień → **Commit changes**;
+- **nowa paczka od Claude:** **Add file → Upload files**, przeciągnij zawartość folderu (6 elementów) → **Commit changes**.
+
+Jeśli sprawdzenie (`npm run build`) wykryje błąd, Render nie podmieni działającej wersji – w panelu Render zobaczysz czerwony status i opis błędu.
+
+## Tryb AI w demo (w przyszłości)
+Demo na stronie działa lokalnie, bez AI. Wersja z prawdziwym modelem Claude jest w osobnym projekcie `beauty-ai-assistant` i wymaga serwera Node.js (Render Web Service) oraz klucza API ustawionego w panelu Render jako zmienna środowiskowa – nigdy w plikach strony. Darmowy Web Service usypia się po 15 min bez ruchu; bez usypiania od ok. $7/mies. plus koszt zapytań do API.

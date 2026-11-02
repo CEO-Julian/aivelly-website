@@ -44,7 +44,7 @@ test('all required sections, texts and navigation are present', () => {
   for (const label of ['Rozwiązania', 'Branże', 'O nas', 'Kontakt', 'Umów rozmowę', 'Poznaj Aivelly', 'Zobacz demo']) {
     assert.ok(html.includes(label), label);
   }
-  for (const b of ['Beauty', 'Hotele', 'Gastronomia', 'Kliniki', 'E-commerce', 'Usługi profesjonalne']) {
+  for (const b of ['Salony beauty', 'Hotele i gastronomia', 'Kliniki i usługi profesjonalne', 'E-commerce', 'Inne przedsiębiorstwa']) {
     assert.ok(html.includes(`<dt>${b}</dt>`), b);
   }
   assert.match(html, /href="#kontakt"[^>]*>Umów rozmowę/);
@@ -60,7 +60,7 @@ test('brand colours are used exactly', () => {
 test('basic SEO and accessibility', () => {
   assert.match(html, /<html lang="pl">/);
   assert.match(html, /<title>[^<]+AIVELLY|AIVELLY[^<]+<\/title>/);
-  assert.match(html, /<meta name="description" content="[^"]{50,160}">/);
+  assert.match(html, /<meta name="description" content="[^"]{50,180}">/);
   assert.match(html, /<meta name="viewport"/);
   assert.match(html, /property="og:title"/);
   assert.match(html, /application\/ld\+json/);
@@ -82,7 +82,7 @@ test('demo is clearly labelled and the site invents no clients or achievements',
 
 // ---------------- Contact form validation ----------------
 const valid = {
-  name: 'Anna Kowalska', email: 'anna@firma.pl', company: '', industry: 'Beauty',
+  name: 'Anna', email: 'anna@firma.pl', company: '',
   message: 'Chcę wdrożyć chatbota w salonie.', consent: true, website: '',
 };
 
@@ -94,7 +94,7 @@ test('contact form: valid data passes', () => {
 
 test('contact form: each required field is validated', () => {
   const cases = {
-    name: { name: '' }, email: { email: 'anna@' }, industry: { industry: '' },
+    name: { name: '' }, email: { email: 'anna@' },
     message: { message: 'hej' }, consent: { consent: false },
   };
   for (const [field, change] of Object.entries(cases)) {
@@ -155,4 +155,77 @@ test('render.yaml describes a free static site publishing ./public', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.equal(pkg.scripts.build, 'node scripts/check.mjs');
   assert.equal(Object.keys(pkg.dependencies || {}).length, 0, 'no dependencies to install');
+});
+
+test('business e-mail is shown and wired into the form', () => {
+  const config = read('public/assets/js/config.js');
+  assert.match(config, /contactEmail: 'aivelly@outlook\.com'/);
+  assert.match(html, /href="mailto:aivelly@outlook\.com"/);
+  assert.match(read('public/polityka-prywatnosci.html'), /aivelly@outlook\.com/);
+  // the mailto flow must tell the visitor they still need to press "Send"
+  assert.match(read('public/assets/js/main.js'), /kliknij w nim „Wyślij”/);
+});
+
+test('hero preview only uses real demo prices and is labelled as demo', () => {
+  const preview = html.slice(html.indexOf('hero-preview'), html.indexOf('</figure>')).replace(/&nbsp;/g, ' ');
+  assert.match(preview, /\(demo\)/);
+  const henna = salon.services.find((s) => s.id === 'henna-brwi');
+  const lam = salon.services.find((s) => s.id === 'laminacja-brwi');
+  assert.ok(preview.includes(henna.price) && preview.includes(lam.price));
+  for (const m of preview.matchAll(/(\d+) zł/g)) {
+    assert.ok([henna.price, lam.price].includes(m[0]), m[0]);
+  }
+});
+
+test('SEO: canonical URL and sitemap', () => {
+  assert.match(html, /<link rel="canonical" href="https:\/\/aivelly\.onrender\.com\/">/);
+  assert.match(read('public/robots.txt'), /Sitemap: https:\/\/aivelly\.onrender\.com\/sitemap\.xml/);
+  assert.match(read('public/sitemap.xml'), /<loc>https:\/\/aivelly\.onrender\.com\/<\/loc>/);
+});
+
+// ---------------- Brief v2 ----------------
+test('solutions, brand description and fonts match the brief', () => {
+  for (const h of ['Chatboty AI', 'Inteligentna automatyzacja', 'Rozwiązania AI dla biznesu']) {
+    assert.ok(html.includes(`<h3>${h}</h3>`), h);
+  }
+  const desc = 'AIVELLY tworzy nowoczesne rozwiązania oparte na sztucznej inteligencji, które pomagają przedsiębiorstwom automatyzować obsługę klientów, usprawniać procesy i rozwijać biznes.';
+  assert.ok(html.includes(`<meta name="description" content="${desc}">`));
+  assert.ok(html.includes(`<p class="about-lead">${desc}</p>`));
+  assert.match(html, /family=Playfair\+Display/);
+  assert.match(html, /family=Inter/);
+  assert.match(html, /class="hero-motif"/);
+  assert.match(html, /<p class="footer-tag">INTELLIGENCE, REFINED\.<\/p>/);
+});
+
+test('contact form has exactly: name, e-mail, company, message (+consent, honeypot)', () => {
+  const form = html.slice(html.indexOf('data-contact-form'), html.indexOf('</form>', html.indexOf('data-contact-form')));
+  const names = [...form.matchAll(/\sname="([^"]+)"/g)].map((m) => m[1]).sort();
+  assert.deepEqual(names, ['company', 'consent', 'email', 'message', 'name', 'website']);
+  assert.match(form, /<label for="name">Imię<\/label>/);
+});
+
+test('spam protection: honeypot and too-fast submissions are flagged', () => {
+  assert.equal(validateContact({ ...valid, elapsedMs: 800 }).spam, true);
+  assert.equal(validateContact({ ...valid, elapsedMs: 15000 }).spam, false);
+  const main = read('public/assets/js/main.js');
+  assert.match(main, /_gotcha: data\.website/);
+});
+
+test('no invented company data anywhere on the AIVELLY pages', () => {
+  for (const file of ['public/index.html', 'public/polityka-prywatnosci.html', 'public/404.html']) {
+    // strip the clearly labelled demo conversation before checking
+    const text = read(file).replace(/<figure class="hero-preview"[\s\S]*?<\/figure>/, '');
+    assert.doesNotMatch(text, /\+48|tel:|\b\d{3}[ -]?\d{3}[ -]?\d{3}\b/, `${file}: phone number`);
+    assert.doesNotMatch(text, /\b(NIP|REGON|KRS)\b[^<\[]*\d/, `${file}: registration number`);
+    assert.doesNotMatch(text, /\b(sp\. z o\.o\.|S\.A\.|ul\. )/, `${file}: legal name or street address`);
+    assert.doesNotMatch(text, /\d+\s?%|\d+\s?(klientów|wdrożeń|firm zaufało)/, `${file}: invented statistics`);
+  }
+});
+
+test('privacy policy is a clearly marked draft, not a claim of compliance', () => {
+  const policy = read('public/polityka-prywatnosci.html');
+  assert.match(policy, /Projekt dokumentu/);
+  assert.ok((policy.match(/class="todo"/g) || []).length >= 5);
+  assert.match(policy, /noindex/);
+  assert.doesNotMatch(policy, /zgodn[aey] z (RODO|prawem)/i);
 });

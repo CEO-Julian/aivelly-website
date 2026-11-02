@@ -63,18 +63,27 @@
   if (!form || !window.AivellyValidation) return;
 
   var statusEl = form.querySelector('[data-form-status]');
+  var noteEl = form.querySelector('[data-form-note]');
+  if (noteEl) {
+    noteEl.textContent = config.formEndpoint
+      ? ''
+      : config.contactEmail
+        ? 'Po kliknięciu otworzy się Twój program pocztowy z gotową wiadomością do ' + config.contactEmail + '.'
+        : '';
+  }
   var submitBtn = form.querySelector('[data-submit]');
-  var FIELDS = ['name', 'email', 'company', 'industry', 'message', 'consent'];
+  var FIELDS = ['name', 'email', 'company', 'message', 'consent'];
+  var loadedAt = Date.now();
 
   function readForm() {
     return {
       name: form.elements.name.value,
       email: form.elements.email.value,
       company: form.elements.company.value,
-      industry: form.elements.industry.value,
       message: form.elements.message.value,
       consent: form.elements.consent.checked,
       website: form.elements.website.value,
+      elapsedMs: Date.now() - loadedAt,
     };
   }
 
@@ -113,13 +122,12 @@
   });
 
   function mailtoLink(data) {
-    var subject = 'Zapytanie ze strony AIVELLY – ' + data.industry;
+    var subject = 'Zapytanie ze strony AIVELLY' + (data.company ? ' – ' + data.company : '');
     var body =
-      'Imię i nazwisko: ' + data.name + '\n' +
+      'Imię: ' + data.name + '\n' +
       'E-mail: ' + data.email + '\n' +
       (data.company ? 'Firma: ' + data.company + '\n' : '') +
-      'Branża: ' + data.industry + '\n\n' +
-      data.message;
+      '\n' + data.message;
     return 'mailto:' + encodeURIComponent(config.contactEmail) +
       '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   }
@@ -146,8 +154,12 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          name: data.name, email: data.email, company: data.company,
-          industry: data.industry, message: data.message,
+          name: data.name,
+          email: data.email,          // Formspree uses this as the reply-to address
+          company: data.company,
+          message: data.message,
+          _subject: 'Zapytanie ze strony AIVELLY',
+          _gotcha: data.website,      // Formspree's own honeypot field
         }),
       })
         .then(function (res) {
@@ -164,14 +176,28 @@
       return;
     }
 
-    // Option 2: only an e-mail address is configured – open the visitor's e-mail app.
+    // Option 2: only an e-mail address is configured – open the visitor's e-mail app
+    // with a ready message. The visitor still has to press "Send" there, so we say so.
     if (config.contactEmail) {
+      var href = mailtoLink(data);
+      if (noteEl) noteEl.textContent = '';
       statusEl.className = 'form-status';
-      statusEl.textContent = 'Formularz nie wysyła jeszcze wiadomości automatycznie. ';
-      var link = document.createElement('a');
-      link.href = mailtoLink(data);
-      link.textContent = 'Otwórz program pocztowy z gotową wiadomością';
-      statusEl.appendChild(link);
+      statusEl.textContent = '';
+      statusEl.append(
+        'Otwieramy Twój program pocztowy z gotową wiadomością – kliknij w nim „Wyślij”. ' +
+        'Nic się nie otworzyło? Napisz bezpośrednio na '
+      );
+      var mail = document.createElement('a');
+      mail.href = 'mailto:' + config.contactEmail;
+      mail.textContent = config.contactEmail;
+      statusEl.appendChild(mail);
+      statusEl.append(' lub ');
+      var again = document.createElement('a');
+      again.href = href;
+      again.textContent = 'spróbuj ponownie';
+      statusEl.appendChild(again);
+      statusEl.append('.');
+      window.location.href = href;
       return;
     }
 

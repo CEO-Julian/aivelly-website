@@ -13,8 +13,8 @@
   --error: #e7a59a;
   --focus: #f0e2c4;
 
-  --font-display: "Bodoni Moda", "Didot", "Times New Roman", serif;
-  --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --wrap: 72rem;
   --gutter: clamp(1rem, 4vw, 2.5rem);
@@ -109,7 +109,30 @@ a { color: var(--gold); text-underline-offset: 0.2em; }
 .nav-toggle[aria-expanded="true"] .nav-toggle-bar::after { transform: translateY(-0.4rem) rotate(-45deg); }
 
 /* ---------- Hero ---------- */
-.hero { padding: clamp(5rem, 14vw, 10rem) 0 clamp(5rem, 12vw, 9rem); }
+.hero { position: relative; overflow: hidden; padding: clamp(5rem, 14vw, 10rem) 0 clamp(5rem, 12vw, 9rem); }
+.hero > .wrap { position: relative; z-index: 1; }
+
+/* Abstract motif: fine gold orbits with connected nodes */
+.hero-motif {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: max(-14rem, calc((100vw - var(--wrap)) / 2 - 16rem));
+  width: min(52rem, 95vw);
+  height: auto;
+  transform: translateY(-50%);
+  pointer-events: none;
+  opacity: 0;
+  animation: motif-in 2.4s ease 0.2s forwards;
+}
+.hero-motif .m-rings circle { fill: none; stroke: var(--gold); stroke-width: 0.6; opacity: 0.22; }
+.hero-motif .m-chords line { stroke: var(--gold); stroke-width: 0.6; opacity: 0.28; }
+.hero-motif .m-node { fill: var(--black); stroke: var(--gold); stroke-width: 1; opacity: 0.75; }
+.hero-motif .m-core { fill: var(--gold); opacity: 0.55; }
+.hero-motif .m-orbit { transform-origin: 300px 300px; animation: motif-turn 140s linear infinite; }
+@keyframes motif-in { to { opacity: 1; } }
+@keyframes motif-in-soft { to { opacity: 0.35; } }
+@keyframes motif-turn { to { transform: rotate(360deg); } }
 .tagline {
   margin: 0 0 2.5rem;
   color: var(--gold);
@@ -138,6 +161,38 @@ a { color: var(--gold); text-underline-offset: 0.2em; }
 @keyframes draw-line { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 .hero-lede { max-width: 36rem; margin: 0 0 2.75rem; color: var(--text-soft); font-size: clamp(1.1rem, 1.6vw, 1.3rem); font-weight: 300; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+
+/* Hero: headline left, a short real conversation from the demo on the right */
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: 4rem; align-items: end; }
+.hero-preview {
+  margin: 0;
+  padding: 1.75rem 0 0;
+  border-top: 1px solid var(--gold);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.hero-preview figcaption { color: var(--gray); font-size: 0.8rem; margin-bottom: 0.4rem; }
+.pv { margin: 0; padding: 0.75rem 1rem; font-size: 0.9rem; line-height: 1.5; max-width: 92%; }
+.pv-user { align-self: flex-end; background: var(--gold); color: var(--black); }
+.pv-bot { align-self: flex-start; background: var(--charcoal); border: 1px solid var(--line-soft); color: var(--ivory); }
+.pv-link { align-self: flex-start; margin-top: 0.4rem; font-size: 0.9rem; }
+.hero-preview .pv { opacity: 0; transform: translateY(8px); animation: pv-in 0.6s ease forwards; }
+.hero-preview .pv:nth-of-type(1) { animation-delay: 0.9s; }
+.hero-preview .pv:nth-of-type(2) { animation-delay: 1.5s; }
+.hero-preview .pv:nth-of-type(3) { animation-delay: 2.3s; }
+.hero-preview .pv:nth-of-type(4) { animation-delay: 2.9s; }
+@keyframes pv-in { to { opacity: 1; transform: none; } }
+
+/* Contact details next to the form */
+.contact-details { margin: 2.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.contact-details dt { color: var(--gray); font-size: 0.85rem; margin-bottom: 0.3rem; }
+.contact-details dd { margin: 0; font-family: var(--font-display); font-size: 1.4rem; }
+.contact-details a { color: var(--ivory); text-decoration: none; border-bottom: 1px solid var(--gold); }
+.contact-details a:hover { color: var(--gold); }
+.form-note { margin: -0.4rem 0 0; font-size: 0.85rem; color: var(--gray); }
+.form-note:empty { display: none; }
+.footer-company a { color: var(--text-soft); }
 
 /* ---------- Sections ---------- */
 .section { padding: var(--section) 0; border-top: 1px solid var(--line-soft); }
@@ -263,17 +318,24 @@ h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; line
 .page h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; margin: 2.5rem 0 0.75rem; }
 .page p, .page li { color: var(--text-soft); max-width: 42rem; }
 .page .notice { border-left: 1px solid var(--gold); padding-left: 1.1rem; color: var(--ivory); }
+.page mark.todo { background: rgba(215, 197, 161, 0.14); color: var(--gold); padding: 0 0.25em; }
 
 /* Single orchestrated reveal for section headings (respects reduced motion) */
 .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.9s ease, transform 0.9s ease; }
 .reveal.is-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .hero-line { animation: none; }
+  .hero-preview .pv { animation: none; opacity: 1; transform: none; }
+  .hero-motif { animation: none; opacity: 1; }
+  .hero-motif .m-orbit { animation: none; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 980px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 4rem; }
+  .hero-motif { top: 0; right: -30%; width: 120vw; transform: none; animation-name: motif-in-soft; }
+  .hero-preview { max-width: 32rem; }
   .solutions { grid-template-columns: 1fr; }
   .solution { padding: 2rem 0; border-left: 0; border-top: 1px solid var(--line); }
   .solution:first-child { padding-top: 0; border-top: 0; }

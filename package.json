@@ -8,7 +8,8 @@
     "start": "node scripts/serve.mjs",
     "build": "node scripts/check.mjs",
     "test": "node --test",
-    "sync-demo": "node scripts/sync-demo.mjs"
+    "sync-demo": "node scripts/sync-demo.mjs",
+    "flat": "node scripts/make-flat.mjs"
   },
   "engines": {
     "node": ">=18.17"

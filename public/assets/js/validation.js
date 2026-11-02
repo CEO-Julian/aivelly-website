@@ -6,7 +6,7 @@
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   /**
-   * @param {{name?:string,email?:string,company?:string,industry?:string,message?:string,consent?:boolean,website?:string}} data
+   * @param {{name?:string,email?:string,company?:string,message?:string,consent?:boolean,website?:string,elapsedMs?:number}} data
    * @returns {{valid: boolean, errors: Object<string,string>, spam: boolean}}
    */
   function validateContact(data) {
@@ -15,19 +15,16 @@
     var name = String(d.name || '').trim();
     var email = String(d.email || '').trim();
     var company = String(d.company || '').trim();
-    var industry = String(d.industry || '').trim();
     var message = String(d.message || '').trim();
 
-    if (!name) errors.name = 'Podaj imię i nazwisko.';
-    else if (name.length < 2) errors.name = 'Imię i nazwisko jest za krótkie.';
+    if (!name) errors.name = 'Podaj swoje imię.';
+    else if (name.length < 2) errors.name = 'Imię jest za krótkie.';
     else if (name.length > 100) errors.name = 'Maksymalnie 100 znaków.';
 
     if (!email) errors.email = 'Podaj adres e-mail.';
     else if (!EMAIL_RE.test(email) || email.length > 150) errors.email = 'Sprawdź adres e-mail – np. jan@firma.pl.';
 
     if (company.length > 120) errors.company = 'Maksymalnie 120 znaków.';
-
-    if (!industry) errors.industry = 'Wybierz branżę.';
 
     if (!message) errors.message = 'Napisz, w czym możemy pomóc.';
     else if (message.length < 10) errors.message = 'Napisz proszę trochę więcej (min. 10 znaków).';
@@ -39,7 +36,9 @@
       valid: Object.keys(errors).length === 0,
       errors: errors,
       // Honeypot: real people don't see this field; bots often fill it in.
-      spam: String(d.website || '').trim() !== '',
+      // Also: nobody fills in this form in under 3 seconds – bots do.
+      spam: String(d.website || '').trim() !== '' ||
+        (typeof d.elapsedMs === 'number' && d.elapsedMs < 3000),
     };
   }
 

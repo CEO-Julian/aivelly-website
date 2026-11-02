@@ -11,5 +11,5 @@
 // że wiadomość nie została wysłana.
 window.AIVELLY_CONFIG = {
   formEndpoint: '',
-  contactEmail: '',
+  contactEmail: 'aivelly@outlook.com',
 };
