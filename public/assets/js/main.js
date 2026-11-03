@@ -55,6 +55,18 @@
     });
   }
 
+  // "Wybieram Start/Pro" buttons pre-fill the contact message with the chosen plan.
+  document.querySelectorAll('[data-plan]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var msg = document.getElementById('message');
+      if (msg && !msg.value.trim()) {
+        msg.value = btn.getAttribute('data-plan') === 'Indywidualny'
+          ? 'Dzień dobry, proszę o wycenę indywidualnego rozwiązania dla mojej firmy.'
+          : 'Dzień dobry, interesuje mnie pakiet ' + btn.getAttribute('data-plan') + '.';
+      }
+    });
+  });
+
   var year = document.querySelector('[data-year]');
   if (year) year.textContent = String(new Date().getFullYear());
 
@@ -72,7 +84,7 @@
         : '';
   }
   var submitBtn = form.querySelector('[data-submit]');
-  var FIELDS = ['name', 'email', 'company', 'message', 'consent'];
+  var FIELDS = ['name', 'email', 'company', 'site', 'message', 'consent'];
   var loadedAt = Date.now();
 
   function readForm() {
@@ -80,6 +92,7 @@
       name: form.elements.name.value,
       email: form.elements.email.value,
       company: form.elements.company.value,
+      site: form.elements.site.value,
       message: form.elements.message.value,
       consent: form.elements.consent.checked,
       website: form.elements.website.value,
@@ -127,6 +140,7 @@
       'Imię: ' + data.name + '\n' +
       'E-mail: ' + data.email + '\n' +
       (data.company ? 'Firma: ' + data.company + '\n' : '') +
+      (data.site ? 'Strona: ' + data.site + '\n' : '') +
       '\n' + data.message;
     return 'mailto:' + encodeURIComponent(config.contactEmail) +
       '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
@@ -157,6 +171,7 @@
           name: data.name,
           email: data.email,          // Formspree uses this as the reply-to address
           company: data.company,
+          site: data.site,
           message: data.message,
           _subject: 'Zapytanie ze strony AIVELLY',
           _gotcha: data.website,      // Formspree's own honeypot field
@@ -165,7 +180,7 @@
         .then(function (res) {
           if (!res.ok) throw new Error('HTTP ' + res.status);
           form.reset();
-          setStatus('Dziękujemy – wiadomość została wysłana. Odpowiemy możliwie szybko.', 'ok');
+          setStatus('Dziękujemy – wiadomość została wysłana. Odpowiemy mailowo możliwie szybko.', 'ok');
         })
         .catch(function () {
           setStatus(

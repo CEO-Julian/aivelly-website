@@ -35,7 +35,8 @@ export function checkSite(root = ROOT) {
         if (url !== '#' && !ids.has(url.slice(1))) problems.push(`${rel}: link ${url} – brak elementu o tym id`);
         continue;
       }
-      const [p, hash] = url.split('#');
+      const [pq, hash] = url.split('#');
+      const p = pq.split('?')[0];
       const target = path.join(root, p.startsWith('/') ? p.slice(1) : path.join(path.dirname(rel), p));
       const resolved = fs.existsSync(target) && fs.statSync(target).isDirectory() ? path.join(target, 'index.html') : target;
       if (!fs.existsSync(resolved)) {

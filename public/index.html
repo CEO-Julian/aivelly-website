@@ -46,9 +46,10 @@
       <nav class="site-nav" id="site-nav" aria-label="Główna nawigacja" data-nav>
         <a href="#rozwiazania">Rozwiązania</a>
         <a href="#branze">Branże</a>
+        <a href="#cennik">Cennik</a>
         <a href="#o-nas">O nas</a>
         <a href="#kontakt">Kontakt</a>
-        <a class="btn btn-gold btn-sm" href="#kontakt" data-cta="rozmowa">Umów rozmowę</a>
+        <a class="btn btn-gold btn-sm" href="#kontakt" data-cta="demo">Zamów bezpłatne demo</a>
       </nav>
     </div>
   </header>
@@ -171,8 +172,61 @@
       </div>
     </section>
 
+    <!-- CENNIK -->
+    <section class="section section-alt" id="cennik" aria-labelledby="cennik-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="cennik-title">Cennik</h2>
+          <p>Jednorazowe wdrożenie i stała miesięczna opłata za utrzymanie. Bez długich umów – wypowiedzenie z miesięcznym wyprzedzeniem.</p>
+        </div>
+        <div class="plans">
+          <article class="plan">
+            <h3>Start</h3>
+            <p class="plan-for">Dla jednej lokalizacji</p>
+            <p class="plan-price"><span class="plan-amount">1&nbsp;490&nbsp;zł</span> wdrożenie</p>
+            <p class="plan-monthly">+ 349&nbsp;zł miesięcznie</p>
+            <ul>
+              <li>Asystent AI na Twojej stronie</li>
+              <li>Baza wiedzy z Twojej oferty, cennika i najczęstszych pytań</li>
+              <li>Przekierowanie do rezerwacji lub kontaktu</li>
+              <li>Hosting, utrzymanie i bieżące aktualizacje informacji</li>
+            </ul>
+            <a class="btn btn-ghost" href="/zamow.html?pakiet=Start" data-plan="Start">Wybieram Start</a>
+          </article>
+          <article class="plan plan-featured">
+            <p class="plan-badge">Polecany</p>
+            <h3>Pro</h3>
+            <p class="plan-for">Dla firm z kilkoma lokalizacjami lub klientami z zagranicy</p>
+            <p class="plan-price"><span class="plan-amount">2&nbsp;990&nbsp;zł</span> wdrożenie</p>
+            <p class="plan-monthly">+ 649&nbsp;zł miesięcznie</p>
+            <ul>
+              <li>Wszystko z pakietu Start</li>
+              <li>Kilka lokalizacji i obsługa w wielu językach</li>
+              <li>Miesięczne podsumowanie najczęstszych pytań klientów</li>
+              <li>Priorytetowe wprowadzanie zmian</li>
+            </ul>
+            <a class="btn btn-gold" href="/zamow.html?pakiet=Pro" data-plan="Pro">Wybieram Pro</a>
+          </article>
+          <article class="plan">
+            <h3>Indywidualny</h3>
+            <p class="plan-for">Dla większych wdrożeń</p>
+            <p class="plan-price"><span class="plan-amount">Wycena</span> po rozmowie</p>
+            <p class="plan-monthly">dopasowana do zakresu</p>
+            <ul>
+              <li>Integracje z systemem rezerwacji, CRM lub sklepem</li>
+              <li>Automatyzacja powtarzalnych zadań</li>
+              <li>Rozwiązania projektowane pod Twoje procesy</li>
+            </ul>
+            <a class="btn btn-ghost" href="#kontakt" data-plan="Indywidualny">Poproś o wycenę</a>
+          </article>
+        </div>
+        <p class="plans-note"><strong>Oferta na start:</strong> dla pierwszych 5 firm wdrożenie o połowę taniej i pierwszy miesiąc utrzymania gratis. Podane ceny są cenami końcowymi.</p>
+        <p class="plans-note">Wszystko załatwiamy mailowo – bez telefonów i spotkań: bezpłatne demo, umowa do akceptacji i wdrożenie. Nie wiesz, który pakiet wybrać? <a href="#kontakt">Napisz do nas</a>.</p>
+      </div>
+    </section>
+
     <!-- O NAS -->
-    <section class="section section-alt" id="o-nas" aria-labelledby="o-nas-title">
+    <section class="section" id="o-nas" aria-labelledby="o-nas-title">
       <div class="wrap about">
         <h2 id="o-nas-title">O nas</h2>
         <div class="about-body">
@@ -200,8 +254,9 @@
     <section class="section" id="kontakt" aria-labelledby="kontakt-title">
       <div class="wrap contact-grid">
         <div class="contact-copy">
-          <h2 id="kontakt-title">Porozmawiajmy</h2>
-          <p>Opisz krótko swoją firmę i to, co chcesz usprawnić. Odpowiemy z propozycją pierwszego kroku.</p>
+          <h2 id="kontakt-title">Napisz do nas</h2>
+          <p>Opisz krótko swoją firmę i to, co chcesz usprawnić. Odpowiadamy mailowo – bez telefonów i spotkań.</p>
+          <p>Podaj adres swojej strony, a przygotujemy <strong>bezpłatne demo</strong> asystenta na Twoich danych i prześlemy link do przetestowania.</p>
           <dl class="contact-details">
             <dt>E-mail</dt>
             <dd><a href="mailto:aivelly@outlook.com">aivelly@outlook.com</a></dd>
@@ -223,6 +278,11 @@
             <label for="company">Nazwa firmy <span class="optional">(opcjonalnie)</span></label>
             <input id="company" name="company" type="text" autocomplete="organization" maxlength="120">
             <p class="field-error" id="company-error" data-error-for="company"></p>
+          </div>
+          <div class="field">
+            <label for="site">Strona firmy <span class="optional">(opcjonalnie)</span></label>
+            <input id="site" name="site" type="text" inputmode="url" autocomplete="url" maxlength="200" placeholder="np. twojafirma.pl">
+            <p class="field-error" id="site-error" data-error-for="site"></p>
           </div>
           <div class="field field-wide">
             <label for="message">Wiadomość</label>
@@ -258,8 +318,10 @@
         <a href="#rozwiazania">Rozwiązania</a>
         <a href="#branze">Branże</a>
         <a href="#demo">Demo</a>
+        <a href="#cennik">Cennik</a>
         <a href="#o-nas">O nas</a>
         <a href="#kontakt">Kontakt</a>
+        <a href="/zamow.html">Zamów wdrożenie</a>
         <a href="/polityka-prywatnosci.html">Polityka prywatności</a>
       </nav>
       <div class="footer-company">

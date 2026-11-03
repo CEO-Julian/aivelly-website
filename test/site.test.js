@@ -41,13 +41,13 @@ test('all required sections, texts and navigation are present', () => {
   assert.match(html, /INTELLIGENCE, REFINED\./);
   assert.match(html, /Inteligentne rozwiązania dla nowoczesnych firm\./);
   assert.match(html, /Automatyzujemy obsługę klientów i pomagamy Twojemu biznesowi rosnąć dzięki sztucznej inteligencji\./);
-  for (const label of ['Rozwiązania', 'Branże', 'O nas', 'Kontakt', 'Umów rozmowę', 'Poznaj Aivelly', 'Zobacz demo']) {
+  for (const label of ['Rozwiązania', 'Branże', 'Cennik', 'O nas', 'Kontakt', 'Zamów bezpłatne demo', 'Poznaj Aivelly', 'Zobacz demo']) {
     assert.ok(html.includes(label), label);
   }
   for (const b of ['Salony beauty', 'Hotele i gastronomia', 'Kliniki i usługi profesjonalne', 'E-commerce', 'Inne przedsiębiorstwa']) {
     assert.ok(html.includes(`<dt>${b}</dt>`), b);
   }
-  assert.match(html, /href="#kontakt"[^>]*>Umów rozmowę/);
+  assert.match(html, /href="#kontakt"[^>]*>Zamów bezpłatne demo/);
   assert.match(html, /href="#rozwiazania">Poznaj Aivelly/);
   assert.match(html, /href="#demo">Zobacz demo/);
 });
@@ -197,10 +197,10 @@ test('solutions, brand description and fonts match the brief', () => {
   assert.match(html, /<p class="footer-tag">INTELLIGENCE, REFINED\.<\/p>/);
 });
 
-test('contact form has exactly: name, e-mail, company, message (+consent, honeypot)', () => {
+test('contact form has: name, e-mail, company, site, message (+consent, honeypot)', () => {
   const form = html.slice(html.indexOf('data-contact-form'), html.indexOf('</form>', html.indexOf('data-contact-form')));
   const names = [...form.matchAll(/\sname="([^"]+)"/g)].map((m) => m[1]).sort();
-  assert.deepEqual(names, ['company', 'consent', 'email', 'message', 'name', 'website']);
+  assert.deepEqual(names, ['company', 'consent', 'email', 'message', 'name', 'site', 'website']);
   assert.match(form, /<label for="name">Imię<\/label>/);
 });
 
@@ -231,4 +231,58 @@ test('privacy policy is final: names the administrator, retention and rights, no
   assert.match(policy, /Formspree/);
   assert.doesNotMatch(policy, /do uzupełnienia|do weryfikacji|class="todo"|Projekt dokumentu|noindex/);
   assert.doesNotMatch(policy, /zgodn[aey] z (RODO|prawem)/i);
+});
+
+test('pricing section: three plans, honest labels, buttons lead to the contact form', () => {
+  assert.match(html, /id="cennik"/);
+  assert.match(html, /1&nbsp;490&nbsp;zł/);
+  assert.match(html, /2&nbsp;990&nbsp;zł/);
+  assert.match(html, /349&nbsp;zł miesięcznie/);
+  assert.match(html, /649&nbsp;zł miesięcznie/);
+  assert.equal((html.match(/data-plan="/g) || []).length, 3);
+  assert.match(html, /href="\/zamow\.html\?pakiet=Start" data-plan="Start"/);
+  assert.match(html, /href="\/zamow\.html\?pakiet=Pro" data-plan="Pro"/);
+  assert.match(html, /href="#kontakt" data-plan="Indywidualny"/);
+  // no invented popularity claims
+  assert.doesNotMatch(html, /najczęściej wybierany|najpopularniejszy|bestseller/i);
+});
+
+// ---------------- v7: no-phone sales flow ----------------
+const order = read('public/zamow.html');
+const { validateOrder } = globalThis.AivellyValidation;
+const goodOrder = {
+  plan: 'Pro', name: 'Anna Nowak', email: 'anna@firma.pl', company: 'Studio X', site: 'studiox.pl',
+  services: 'Manicure 120 zł, pedicure 150 zł', consent: true, website: '', elapsedMs: 20000,
+};
+
+test('no phone calls promised anywhere; contact is by e-mail', () => {
+  assert.doesNotMatch(html, /rozmow[aęy] telefoniczn|zadzwonimy|Umów rozmowę/i);
+  assert.match(html, /bez telefonów i spotkań/);
+});
+
+test('contact form: optional website field is validated', () => {
+  assert.equal(validateContact({ ...valid, site: 'twojafirma.pl' }).valid, true);
+  assert.equal(validateContact({ ...valid, site: 'https://www.salon-x.com.pl/kontakt' }).valid, true);
+  assert.ok(validateContact({ ...valid, site: 'to nie jest adres' }).errors.site);
+});
+
+test('order form validation', () => {
+  assert.equal(validateOrder(goodOrder).valid, true);
+  for (const [field, change] of Object.entries({
+    plan: { plan: '' }, company: { company: '' }, services: { services: '' }, consent: { consent: false }, email: { email: 'x@' },
+  })) {
+    assert.ok(validateOrder({ ...goodOrder, ...change }).errors[field], field);
+  }
+  assert.equal(validateOrder({ ...goodOrder, website: 'spam' }).spam, true);
+});
+
+test('order page: honest about commitment, all fields labelled, plan preselect works', () => {
+  assert.match(order, /To nie jest jeszcze zamówienie ani zobowiązanie do zapłaty/);
+  assert.match(order, /<option value="Start">Start – 1 490 zł wdrożenie \+ 349 zł \/ mies\.<\/option>/);
+  assert.match(order, /<option value="Pro">Pro – 2 990 zł wdrożenie \+ 649 zł \/ mies\.<\/option>/);
+  for (const m of order.matchAll(/<(input|select|textarea)\b[^>]*\sid="([^"]+)"/g)) {
+    assert.ok(order.includes(`for="${m[2]}"`), `label for #${m[2]}`);
+  }
+  assert.match(read('public/assets/js/order.js'), /searchParams|URLSearchParams/);
+  assert.match(read('public/polityka-prywatnosci.html'), /Zamów wdrożenie/);
 });

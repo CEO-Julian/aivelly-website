@@ -4,6 +4,8 @@
   'use strict';
 
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var SITE_RE = /^(https?:\/\/)?[a-z0-9ąćęłńóśźż-]+(\.[a-z0-9ąćęłńóśźż-]+)+(\/\S*)?$/i;
+  var PLANS = ['Start', 'Pro', 'Indywidualny'];
 
   /**
    * @param {{name?:string,email?:string,company?:string,message?:string,consent?:boolean,website?:string,elapsedMs?:number}} data
@@ -26,6 +28,9 @@
 
     if (company.length > 120) errors.company = 'Maksymalnie 120 znaków.';
 
+    var site = String(d.site || '').trim();
+    if (site && (!SITE_RE.test(site) || site.length > 200)) errors.site = 'Sprawdź adres strony – np. twojafirma.pl.';
+
     if (!message) errors.message = 'Napisz, w czym możemy pomóc.';
     else if (message.length < 10) errors.message = 'Napisz proszę trochę więcej (min. 10 znaków).';
     else if (message.length > 2000) errors.message = 'Maksymalnie 2000 znaków.';
@@ -42,6 +47,27 @@
     };
   }
 
-  root.AivellyValidation = { validateContact: validateContact };
+  /**
+   * Order ("Zamów wdrożenie") form. Needs enough information to build a demo.
+   */
+  function validateOrder(data) {
+    var d = data || {};
+    var base = validateContact({
+      name: d.name, email: d.email, company: d.company, site: d.site,
+      message: 'x'.repeat(10), consent: d.consent, website: d.website, elapsedMs: d.elapsedMs,
+    });
+    var errors = base.errors;
+    if (!String(d.company || '').trim()) errors.company = 'Podaj nazwę firmy.';
+    if (PLANS.indexOf(String(d.plan || '')) === -1) errors.plan = 'Wybierz pakiet.';
+    var services = String(d.services || '').trim();
+    if (!services) errors.services = 'Wklej cennik usług albo podaj link do niego.';
+    else if (services.length < 10) errors.services = 'Napisz proszę trochę więcej (min. 10 znaków).';
+    ['services', 'hours', 'faq', 'booking', 'notes'].forEach(function (f) {
+      if (String(d[f] || '').length > 5000) errors[f] = 'Maksymalnie 5000 znaków.';
+    });
+    return { valid: Object.keys(errors).length === 0, errors: errors, spam: base.spam };
+  }
+
+  root.AivellyValidation = { validateContact: validateContact, validateOrder: validateOrder };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.AivellyValidation;
 })(typeof window !== 'undefined' ? window : globalThis);

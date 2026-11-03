@@ -8,13 +8,15 @@ Statyczna, responsywna strona marki AIVELLY z interaktywnym demo chatbota. Przyg
 aivelly-website/
 ├── public/                      ← TO jest publikowana strona
 │   ├── index.html               ← strona główna (wszystkie sekcje)
-│   ├── polityka-prywatnosci.html← szkic polityki prywatności
+│   ├── polityka-prywatnosci.html← polityka prywatności
+│   ├── zamow.html               ← formularz „Zamów wdrożenie”
 │   ├── 404.html                 ← strona „nie znaleziono”
 │   ├── robots.txt, sitemap.xml, favicon.svg
 │   ├── assets/css/style.css     ← wygląd (kolory marki na górze pliku)
 │   ├── assets/js/config.js      ← ustawienia formularza (bez sekretów)
 │   ├── assets/js/validation.js  ← walidacja formularza
-│   ├── assets/js/main.js        ← menu, animacja, formularz
+│   ├── assets/js/main.js        ← menu, animacja, formularz kontaktowy
+│   ├── assets/js/order.js       ← formularz zamówienia
 │   └── demo/                    ← demo chatbota (działa w przeglądarce)
 ├── scripts/check.mjs            ← sprawdzenie strony (Render uruchamia je przy publikacji)
 ├── scripts/serve.mjs            ← podgląd lokalny
@@ -34,8 +36,10 @@ Projekt nie ma żadnych zależności do instalowania (`npm install` nie jest pot
 | Wygląd na telefonie, tablecie i komputerze | ✅ sprawdzone |
 | Demo chatbota | 🟡 **demonstracja** – fikcyjny salon, reguły w przeglądarce, bez AI, bez dostępu do kalendarza |
 | Formularz – walidacja i ochrona przed spamem | ✅ działa (pole-pułapka + odrzucanie zbyt szybkich wysyłek) |
-| Formularz – wysyłka | ✅ teraz: otwiera program pocztowy odwiedzającego z gotową wiadomością do aivelly@outlook.com · ⏳ zalecane: Formspree (wysyłka bez programu pocztowego) |
-| Polityka prywatności | 🟡 **projekt** – fragmenty oznaczone [do uzupełnienia]/[do weryfikacji] |
+| Formularz kontaktowy – wysyłka | ✅ przez Formspree na aivelly@outlook.com (sprawdzone 3.11.2026) |
+| Cennik (Start / Pro / Indywidualny) | ✅ sekcja #cennik na stronie głównej |
+| Formularz „Zamów wdrożenie” | ✅ /zamow.html – wysyła przez Formspree, przycisk pakietu wybiera go automatycznie |
+| Polityka prywatności | ✅ wersja finalna (administrator: Julian Pawliński, osoba fizyczna) |
 | Dane rejestrowe firmy | ⚠️ brak – celowo nie zostały wymyślone |
 | Własna domena | ⏳ opcjonalnie później |
 

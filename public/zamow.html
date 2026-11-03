@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zamów wdrożenie – AIVELLY</title>
+  <meta name="description" content="Zamów asystenta AI na stronę swojej firmy. Prześlij informacje o ofercie – przygotujemy demo i umowę do akceptacji mailowo.">
+  <link rel="canonical" href="https://aivelly.onrender.com/zamow.html">
+  <meta name="theme-color" content="#0B0B0C">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header is-scrolled">
+    <div class="wrap header-inner">
+      <a class="logo" href="/">AIVELLY</a>
+      <a class="btn btn-ghost btn-sm" href="/#cennik">Wróć do cennika</a>
+    </div>
+  </header>
+
+  <main class="page order-page">
+    <div class="wrap">
+      <h1>Zamów wdrożenie</h1>
+      <p class="order-lead">Prześlij nam informacje o swojej firmie. Na ich podstawie przygotujemy asystenta, a umowę prześlemy do akceptacji mailowo – bez telefonów i spotkań.</p>
+
+      <ol class="order-steps">
+        <li><strong>Wysyłasz formularz.</strong> To nie jest jeszcze zamówienie ani zobowiązanie do zapłaty.</li>
+        <li><strong>Dostajesz demo</strong> asystenta na Twoich danych i umowę do akceptacji.</li>
+        <li><strong>Po akceptacji i opłaceniu wdrożenia</strong> uruchamiamy asystenta na Twojej stronie.</li>
+      </ol>
+
+      <form class="contact-form order-form" data-order-form novalidate>
+        <div class="field field-wide">
+          <label for="plan">Pakiet</label>
+          <select id="plan" name="plan" required>
+            <option value="">Wybierz…</option>
+            <option value="Start">Start – 1 490 zł wdrożenie + 349 zł / mies.</option>
+            <option value="Pro">Pro – 2 990 zł wdrożenie + 649 zł / mies.</option>
+            <option value="Indywidualny">Indywidualny – wycena</option>
+          </select>
+          <p class="field-error" id="plan-error" data-error-for="plan"></p>
+        </div>
+        <div class="field">
+          <label for="name">Imię i nazwisko</label>
+          <input id="name" name="name" type="text" autocomplete="name" required maxlength="100">
+          <p class="field-error" id="name-error" data-error-for="name"></p>
+        </div>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" autocomplete="email" required maxlength="150">
+          <p class="field-error" id="email-error" data-error-for="email"></p>
+        </div>
+        <div class="field">
+          <label for="company">Nazwa firmy</label>
+          <input id="company" name="company" type="text" autocomplete="organization" required maxlength="120">
+          <p class="field-error" id="company-error" data-error-for="company"></p>
+        </div>
+        <div class="field">
+          <label for="site">Strona firmy <span class="optional">(opcjonalnie)</span></label>
+          <input id="site" name="site" type="text" inputmode="url" autocomplete="url" maxlength="200" placeholder="np. twojafirma.pl">
+          <p class="field-error" id="site-error" data-error-for="site"></p>
+        </div>
+        <div class="field field-wide">
+          <label for="services">Usługi i ceny</label>
+          <textarea id="services" name="services" rows="6" required maxlength="5000" placeholder="Wklej cennik albo podaj link do niego. Asystent poda klientom tylko te ceny."></textarea>
+          <p class="field-error" id="services-error" data-error-for="services"></p>
+        </div>
+        <div class="field field-wide">
+          <label for="hours">Godziny otwarcia i adres <span class="optional">(opcjonalnie)</span></label>
+          <textarea id="hours" name="hours" rows="3" maxlength="5000"></textarea>
+          <p class="field-error" id="hours-error" data-error-for="hours"></p>
+        </div>
+        <div class="field field-wide">
+          <label for="faq">Najczęstsze pytania klientów i odpowiedzi <span class="optional">(opcjonalnie)</span></label>
+          <textarea id="faq" name="faq" rows="5" maxlength="5000" placeholder="Np. zasady odwoływania wizyt, płatności, parking, vouchery."></textarea>
+          <p class="field-error" id="faq-error" data-error-for="faq"></p>
+        </div>
+        <div class="field field-wide">
+          <label for="booking">Jak klienci rezerwują lub kupują <span class="optional">(opcjonalnie)</span></label>
+          <input id="booking" name="booking" type="text" maxlength="5000" placeholder="Np. link do Booksy, sklepu albo numer telefonu recepcji">
+          <p class="field-error" id="booking-error" data-error-for="booking"></p>
+        </div>
+        <div class="field field-wide">
+          <label for="notes">Uwagi <span class="optional">(opcjonalnie)</span></label>
+          <textarea id="notes" name="notes" rows="3" maxlength="5000"></textarea>
+          <p class="field-error" id="notes-error" data-error-for="notes"></p>
+        </div>
+        <div class="field field-wide field-hp" aria-hidden="true">
+          <label for="website">Nie wypełniaj tego pola</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="field field-wide field-check">
+          <input id="consent" name="consent" type="checkbox" required>
+          <label for="consent">Zgadzam się na wykorzystanie podanych informacji w celu przygotowania demo, oferty i wdrożenia. Zasady przetwarzania danych opisuje <a href="/polityka-prywatnosci.html">polityka prywatności</a>.</label>
+          <p class="field-error" id="consent-error" data-error-for="consent"></p>
+        </div>
+        <div class="field-wide form-actions">
+          <button class="btn btn-gold" type="submit" data-submit>Wyślij zamówienie</button>
+          <p class="form-status" role="status" aria-live="polite" data-form-status></p>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <nav aria-label="Stopka">
+        <a href="/">AIVELLY</a>
+        <a href="mailto:aivelly@outlook.com">aivelly@outlook.com</a>
+        <a href="/polityka-prywatnosci.html">Polityka prywatności</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/assets/js/config.js" defer></script>
+  <script src="/assets/js/validation.js" defer></script>
+  <script src="/assets/js/order.js" defer></script>
+</body>
+</html>
