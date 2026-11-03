@@ -222,10 +222,12 @@ test('no invented company data anywhere on the AIVELLY pages', () => {
   }
 });
 
-test('privacy policy is a clearly marked draft, not a claim of compliance', () => {
+test('privacy policy is final: names the administrator, retention and rights, no placeholders', () => {
   const policy = read('public/polityka-prywatnosci.html');
-  assert.match(policy, /Projekt dokumentu/);
-  assert.ok((policy.match(/class="todo"/g) || []).length >= 5);
-  assert.match(policy, /noindex/);
+  assert.match(policy, /Administratorem Twoich danych osobowych jest Julian Pawliński/);
+  assert.match(policy, /przez 6 miesięcy od ostatniego kontaktu/);
+  assert.match(policy, /Prezesa Urzędu Ochrony Danych Osobowych/);
+  assert.match(policy, /mailto:aivelly@outlook\.com/);
+  assert.doesNotMatch(policy, /do uzupełnienia|do weryfikacji|class="todo"|Projekt dokumentu|noindex/);
   assert.doesNotMatch(policy, /zgodn[aey] z (RODO|prawem)/i);
 });

@@ -318,6 +318,8 @@ h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; line
 .page h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; margin: 2.5rem 0 0.75rem; }
 .page p, .page li { color: var(--text-soft); max-width: 42rem; }
 .page .notice { border-left: 1px solid var(--gold); padding-left: 1.1rem; color: var(--ivory); }
+.page ul { padding-left: 1.2rem; max-width: 42rem; }
+.page li { margin-bottom: 0.4rem; }
 .page mark.todo { background: rgba(215, 197, 161, 0.14); color: var(--gold); padding: 0 0.25em; }
 
 /* Single orchestrated reveal for section headings (respects reduced motion) */
