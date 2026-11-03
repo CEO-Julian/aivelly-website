@@ -10,6 +10,6 @@
 // Jeśli oba pola są puste, formularz sprawdza dane, ale uczciwie informuje,
 // że wiadomość nie została wysłana.
 window.AIVELLY_CONFIG = {
-  formEndpoint: '',
+  formEndpoint: 'https://formspree.io/f/meaavekg',
   contactEmail: 'aivelly@outlook.com',
 };

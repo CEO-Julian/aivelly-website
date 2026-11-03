@@ -168,7 +168,11 @@
           setStatus('Dziękujemy – wiadomość została wysłana. Odpowiemy możliwie szybko.', 'ok');
         })
         .catch(function () {
-          setStatus('Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę.', 'error');
+          setStatus(
+            'Nie udało się wysłać wiadomości. Spróbuj ponownie za chwilę' +
+            (config.contactEmail ? ' albo napisz bezpośrednio na ' + config.contactEmail + '.' : '.'),
+            'error'
+          );
         })
         .finally(function () {
           submitBtn.disabled = false;

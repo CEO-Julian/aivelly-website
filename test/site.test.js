@@ -112,7 +112,7 @@ test('contact form: honeypot flags bots', () => {
 
 test('contact form never claims success without a configured endpoint', () => {
   const config = read('public/assets/js/config.js');
-  assert.match(config, /formEndpoint: ''/);
+  assert.match(config, /formEndpoint: 'https:\/\/formspree\.io\/f\/[a-z0-9]+'/);
   const main = read('public/assets/js/main.js');
   // the success message only exists inside the formEndpoint branch
   const successIdx = main.indexOf('wiadomość została wysłana');
@@ -228,6 +228,7 @@ test('privacy policy is final: names the administrator, retention and rights, no
   assert.match(policy, /przez 6 miesięcy od ostatniego kontaktu/);
   assert.match(policy, /Prezesa Urzędu Ochrony Danych Osobowych/);
   assert.match(policy, /mailto:aivelly@outlook\.com/);
+  assert.match(policy, /Formspree/);
   assert.doesNotMatch(policy, /do uzupełnienia|do weryfikacji|class="todo"|Projekt dokumentu|noindex/);
   assert.doesNotMatch(policy, /zgodn[aey] z (RODO|prawem)/i);
 });
